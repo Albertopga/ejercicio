@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="./index.js"></script>
   <title>Documento</title>
 </head>
 
@@ -4890,9 +4889,12 @@ Complimentary Tea &amp; Coffee
       .split(' ')[1]
       .replace(/[\()]/g, '')
   }
+  const getCurrencySymbol = () => {
+    return document.getElementById('fb-headbar-block-currency').children[1].textContent
+      .split(' ')[0]
+  }
   const countRoomsReturned = () => {
-    const results = [...document.getElementById('results-items').children]
-    return results.filter(element => element.className.includes('accommodation')).length;
+    return getAccomodationResults().length
   }
   // TODO hacer función a la que se le pasa el id y hace el filtrado de la hab y de los invitado
   const countRoomsSerched = () => {
@@ -4912,18 +4914,44 @@ Complimentary Tea &amp; Coffee
   }
 
   const minimunPricePerNight = () => {
-    return document.getElementById('nbnights').textContent
+    const bookedNights = calculateNumberOfNights()
+    const prices = []
 
+    getAccomodationResults().forEach(room => {
+      const summaryCards = [...room.lastElementChild.children]
+      const offersPerCard = [...summaryCards.map(child => child.children)]
+        .map(priceCard => priceCard[0])
+        .map(section => section.children[1])
+
+      offersPerCard.forEach(fbResultsRateRight => {
+        [...fbResultsRateRight.children[1].children].forEach(element => {
+          if (element.className.includes('new-price')) {
+            price = (element.children[0].attributes[1].textContent)
+            pricePerNight = price / bookedNights
+            prices.push((Math.round(pricePerNight * 100) / 100))
+          }
+        })
+      })
+    })
+
+    return prices.sort((a, b) => {
+      let result = 0
+      a > b ? result = 1 : result = -1
+      return result;
+    })[0]
+  };
+  const getAccomodationResults = () => {
+    const results = [...document.getElementById('results-items').children]
+    return results.filter(element => element.className.includes('accommodation'))
   }
-
 
   const calculateNumberOfNights = () => {
     // https://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript
-    const arrival = new Date(getArrivalDate()).getTime();
-    const departure = new Date(getDepartureDate()).getTime();
-    return Math.ceil((departure - arrival) / (1000 * 60 * 60 * 24));
+    const arrival = new Date(getArrivalDate()).getTime()
+    const departure = new Date(getDepartureDate()).getTime()
+    return Math.ceil((departure - arrival) / (1000 * 60 * 60 * 24))
   }
-  console.log(languajeSelected());
+  console.table(minimunPricePerNight())
 
   /*I had doubts about the point where I should return the number of rooms searched, because I think it refers to
   the number of results returned by the search, but at the last moment I think it is possible that it refers to the
