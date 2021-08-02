@@ -83,14 +83,13 @@ const getOptionalInfo = (summaryCard) => {
   });
   return options;
 };
+
 /*I had doubts about the point where I should return the number of rooms searched, because I think it refers to
 the number of results returned by the search, but at the last moment I think it is possible that it refers to the
 number of rooms I need to book. This is the reason why I add one more field in the most relevan data object.*/
 
 (start = () => {
   url = window.location.pathname;
-  url =
-    "index.php?s=results&group=ascentral&property=thphu18547&arrival=2021-08-01&departure=2021-08-06&adults1=2&children1=1&childrenAges1=2&locale=en_GB&currency=EUR&stid=ah67z4lsr&Clusternames=ascentral&cluster=ascentral&Hotelnames=Asia-Centara-Grand-Beach-Resort-Phuket&hname=Asia-Centara-Grand-Beach-Resort-Phuket&arrivalDateValue=2021-08-01&frommonth=8&fromday=1&fromyear=2021&nbdays=5&nbNightsValue=5&adulteresa=2&nbAdultsValue=2&enfantresa=1&nbChildrenValue=1&redir=BIZ-so5523q0o4&rt=1627658631";
 
   if (url.includes("?")) {
     let params = Object.fromEntries(
